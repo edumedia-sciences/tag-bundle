@@ -1,0 +1,14 @@
+{
+  "name": "edumedia/edumedia-tag-bundle",
+  "type": "symfony-bundle",
+  "autoload": {
+    "psr-4": {
+      "eduMedia\\TagBundle\\": "src"
+    }
+  },
+  "require": {
+    "php": ">=8.0.2",
+    "symfony/http-kernel": "^6.0",
+    "doctrine/orm": "^2.11"
+  }
+}
