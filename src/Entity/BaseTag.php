@@ -12,8 +12,9 @@ class BaseTag implements TagInterface
 
     use TagTrait;
 
-    public function __construct()
+    public function __construct(?string $name = null)
     {
         $this->tagging = new ArrayCollection();
+        $this->setName($name);
     }
 }
