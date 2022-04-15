@@ -18,6 +18,9 @@ trait TaggableTrait
         return $this->getId();
     }
 
+    /**
+     * @internal Use TagManager instead
+     */
     public function getTags(): Collection {
         if (is_null($this->tags)) {
             $this->tags = new ArrayCollection();
