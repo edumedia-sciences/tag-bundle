@@ -1,6 +1,7 @@
 {
   "name": "edumedia/edumedia-tag-bundle",
   "type": "symfony-bundle",
+  "license": "MIT",
   "autoload": {
     "psr-4": {
       "eduMedia\\TagBundle\\": "src"
