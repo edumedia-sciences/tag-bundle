@@ -1,5 +1,5 @@
 {
-  "name": "edumedia/edumedia-tag-bundle",
+  "name": "edumedia/tag-bundle",
   "type": "symfony-bundle",
   "license": "MIT",
   "autoload": {
