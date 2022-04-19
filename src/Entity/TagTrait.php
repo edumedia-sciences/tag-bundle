@@ -18,7 +18,7 @@ trait TagTrait
     protected ?Collection $tagging = null;
 
     #[ORM\Column(type: 'string', unique: true)]
-    private string $name;
+    private ?string $name;
 
     public function __construct(?string $name = null)
     {
