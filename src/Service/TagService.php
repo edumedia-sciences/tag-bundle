@@ -32,27 +32,6 @@ class TagService
         $this->entityTags = new ArrayCollection();
     }
 
-    private function getResourceKey(TaggableInterface $resource): string {
-        return $resource->getTaggableType() . ':' . $resource->getTaggableId();
-    }
-
-    public function getTags(TaggableInterface $resource): Collection {
-        $key = $this->getResourceKey($resource);
-
-        if (!$this->entityTags->containsKey($key)) {
-            $this->entityTags->set($key, new ArrayCollection());
-        }
-
-        return $this->entityTags->get($key);
-    }
-
-    public function removeTag(TagInterface $tag, TaggableInterface $resource): self
-    {
-        $this->getTags($resource)->removeElement($tag);
-
-        return $this;
-    }
-
     public function loadOrCreateTag($name): TagInterface
     {
         $tags = $this->loadOrCreateTags([$name]);
@@ -101,16 +80,65 @@ class TagService
         return $tags;
     }
 
-    protected function createQueryBuilder(string $alias, $indexBy = null): QueryBuilder
+    public function getTags(TaggableInterface $resource): Collection
     {
-        return $this->manager->createQueryBuilder()
-            ->select($alias)
-            ->from($this->tagClass, $alias, $indexBy);
+        $key = $this->getResourceKey($resource);
+
+        if (!$this->entityTags->containsKey($key)) {
+            $this->entityTags->set($key, new ArrayCollection());
+        }
+
+        return $this->entityTags->get($key);
     }
 
-    protected function createTag($name): TagInterface
+    public function addTag(TagInterface $tag, TaggableInterface $resource): self
     {
-        return new $this->tagClass($name);
+        $tags = $this->getTags($resource);
+        if (!$tags->contains($tag)) {
+            $tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TagInterface[] $tags
+     */
+    public function addTags(array $tags, TaggableInterface $resource): self
+    {
+        foreach ($tags as $tag) {
+            if ($tag instanceof TagInterface) {
+                $this->addTag($tag, $resource);
+            }
+        }
+
+        return $this;
+    }
+
+    public function removeTag(TagInterface $tag, TaggableInterface $resource): self
+    {
+        $this->getTags($resource)->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @param TagInterface[] $tags
+     */
+    public function replaceTags(array $tags, TaggableInterface $resource): self
+    {
+        $this->entityTags->remove($this->getResourceKey($resource));
+        $this->addTags($tags, $resource);
+
+        return $this;
+    }
+
+    public function loadTagging(TaggableInterface $resource): self
+    {
+        $tags = $this->queryTagging($resource);
+        $this->replaceTags($tags, $resource);
+
+        return $this;
     }
 
     public function saveTagging(TaggableInterface $resource): self
@@ -154,73 +182,6 @@ class TagService
 
         if (count($tagsToAdd)) {
             $this->manager->flush();
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return TagInterface[]
-     */
-    protected function queryTagging(TaggableInterface $resource): array
-    {
-        return $this->manager
-            ->createQueryBuilder()
-            ->select('t')
-            ->from($this->tagClass, 't')
-            ->innerJoin('t.tagging', 't2', Expr\Join::WITH, 't2.resourceId = :id AND t2.resourceType = :type')
-            ->setParameter('id', $resource->getTaggableId())
-            ->setParameter('type', $resource->getTaggableType())
-
-            // ->orderBy('t.name', 'ASC')
-
-            ->getQuery()
-            ->getResult();
-    }
-
-    protected function createTagging(TagInterface $tag, TaggableInterface $resource): TaggingInterface
-    {
-        return new $this->taggingClass($tag, $resource);
-    }
-
-    public function loadTagging(TaggableInterface $resource): self
-    {
-        $tags = $this->queryTagging($resource);
-        $this->replaceTags($tags, $resource);
-
-        return $this;
-    }
-
-    /**
-     * @param TagInterface[] $tags
-     */
-    public function replaceTags(array $tags, TaggableInterface $resource): self
-    {
-        $this->entityTags->remove($this->getResourceKey($resource));
-        $this->addTags($tags, $resource);
-
-        return $this;
-    }
-
-    /**
-     * @param TagInterface[] $tags
-     */
-    public function addTags(array $tags, TaggableInterface $resource): self
-    {
-        foreach ($tags as $tag) {
-            if ($tag instanceof TagInterface) {
-                $this->addTag($tag, $resource);
-            }
-        }
-
-        return $this;
-    }
-
-    public function addTag(TagInterface $tag, TaggableInterface $resource): self
-    {
-        $tags = $this->getTags($resource);
-        if (!$tags->contains($tag)) {
-            $tags->add($tag);
         }
 
         return $this;
@@ -336,6 +297,47 @@ class TagService
         }
 
         return $ids;
+    }
+
+    protected function createQueryBuilder(string $alias, $indexBy = null): QueryBuilder
+    {
+        return $this->manager->createQueryBuilder()
+            ->select($alias)
+            ->from($this->tagClass, $alias, $indexBy);
+    }
+
+    protected function createTag($name): TagInterface
+    {
+        return new $this->tagClass($name);
+    }
+
+    private function getResourceKey(TaggableInterface $resource): string
+    {
+        return $resource->getTaggableType() . ':' . $resource->getTaggableId();
+    }
+
+    /**
+     * @return TagInterface[]
+     */
+    protected function queryTagging(TaggableInterface $resource): array
+    {
+        return $this->manager
+            ->createQueryBuilder()
+            ->select('t')
+            ->from($this->tagClass, 't')
+            ->innerJoin('t.tagging', 't2', Expr\Join::WITH, 't2.resourceId = :id AND t2.resourceType = :type')
+            ->setParameter('id', $resource->getTaggableId())
+            ->setParameter('type', $resource->getTaggableType())
+
+            // ->orderBy('t.name', 'ASC')
+
+            ->getQuery()
+            ->getResult();
+    }
+
+    protected function createTagging(TagInterface $tag, TaggableInterface $resource): TaggingInterface
+    {
+        return new $this->taggingClass($tag, $resource);
     }
 
 }
