@@ -15,8 +15,8 @@ composer require edumedia/edumedia-tag-bundle
 ### Create Tag class
 
 ```php
-// src/Entity/Tag.php
 <?php
+// src/Entity/Tag.php
 
 namespace App\Entity;
 
@@ -41,8 +41,8 @@ class Tag implements TagInterface
 ### Create Tagging class
 
 ```php
-// src/Entity/Tagging.php
 <?php
+// src/Entity/Tagging.php
 
 namespace App\Entity;
 
@@ -70,8 +70,8 @@ class Tagging implements TaggingInterface
 Here is a User example:
 
 ```php
-// src/Entity/User
 <?php
+// src/Entity/User
 
 namespace App\Entity;
 
