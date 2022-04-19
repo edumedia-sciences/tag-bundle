@@ -21,9 +21,9 @@ class TagService
     protected string $tagLookupField = 'name';
 
     public function __construct(
-        private EntityManagerInterface $manager,
-        private string $tagClass = 'eduMedia\TagBundle\Entity\BaseTag',
-        private string $taggingClass = 'eduMedia\TagBundle\Entity\BaseTagging'
+        private string $tagClass,
+        private string $taggingClass,
+        private EntityManagerInterface $manager
     ) {
     }
 

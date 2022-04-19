@@ -2,6 +2,7 @@
 
 namespace eduMedia\TagBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,11 +14,17 @@ trait TagTrait
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\OneToMany(mappedBy: 'tag', targetEntity: 'eduMedia\TagBundle\Entity\BaseTagging', fetch: 'EAGER')]
+//    #[ORM\OneToMany(mappedBy: 'tag', targetEntity: 'eduMedia\TagBundle\Entity\AbstractTagging', fetch: 'EAGER')]
     protected ?Collection $tagging = null;
 
     #[ORM\Column(type: 'string', unique: true)]
     private string $name;
+
+    public function __construct(?string $name = null)
+    {
+        $this->tagging = new ArrayCollection();
+        $this->setName($name);
+    }
 
     public function getId()
     {
@@ -35,17 +42,5 @@ trait TagTrait
 
         return $this;
     }
-
-//    public function getTagging(): ?Collection
-//    {
-//        return $this->tagging;
-//    }
-//
-//    public function setTagging(Collection $tagging): self
-//    {
-//        $this->tagging = $tagging;
-//
-//        return $this;
-//    }
 
 }

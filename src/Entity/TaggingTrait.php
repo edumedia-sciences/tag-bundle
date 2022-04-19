@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 trait TaggingTrait
 {
 
-    #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: 'eduMedia\TagBundle\Entity\BaseTag', inversedBy: 'tagging')]
+//    #[ORM\Id]
+//    #[ORM\ManyToOne(targetEntity: 'eduMedia\TagBundle\Entity\AbstractTag', inversedBy: 'tagging')]
     protected TagInterface $tag;
 
     #[ORM\Id]
@@ -18,6 +18,17 @@ trait TaggingTrait
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     private ?int $resourceId = null;
+
+    public function __construct(TagInterface $tag = null, TaggableInterface $resource = null)
+    {
+        if ($tag != null) {
+            $this->setTag($tag);
+        }
+
+        if ($resource != null) {
+            $this->setResource($resource);
+        }
+    }
 
     public function getTag(): TagInterface
     {
