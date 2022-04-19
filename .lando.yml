@@ -1,0 +1,5 @@
+name: edumedia-tag-bundle
+recipe: symfony
+config:
+  webroot: .
+  php: '8.0'
