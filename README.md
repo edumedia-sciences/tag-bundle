@@ -9,7 +9,7 @@ Revival of https://github.com/FabienPennequin/FPNTagBundle for Symfony 6+ and PH
 ### Install bundle
 
 ```sh
-composer require edumedia/edumedia-tag-bundle
+composer require edumedia/tag-bundle
 ```
 
 ### Create Tag class
