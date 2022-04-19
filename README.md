@@ -101,7 +101,7 @@ services:
 ### Migrate
 
 ```sh
-bin/console make:miggration
+bin/console make:migration
 bin/console doctrine:migrations:migrate
 ```
 
