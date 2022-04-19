@@ -7,6 +7,6 @@ interface TagInterface
 
     function getId();
 
-    function getName(): string;
+    function getName(): ?string;
 
 }
