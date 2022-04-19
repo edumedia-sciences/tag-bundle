@@ -20,7 +20,7 @@ trait TagTrait
     #[ORM\Column(type: 'string', unique: true)]
     private string $name;
 
-    public function __construct(?string $name)
+    public function __construct(?string $name = null)
     {
         $this->tagging = new ArrayCollection();
         $this->setName($name);
@@ -31,12 +31,12 @@ trait TagTrait
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(?string $name = null): self
     {
         $this->name = $name;
 
