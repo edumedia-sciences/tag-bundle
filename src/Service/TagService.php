@@ -15,13 +15,6 @@ use eduMedia\TagBundle\Entity\TagInterface;
 class TagService
 {
 
-    /**
-     * The field that's considered the "lookup" for tags
-     *
-     * @var string
-     */
-    protected string $tagLookupField = 'name';
-
     private Collection $entityTags;
 
     public function __construct(
@@ -238,7 +231,7 @@ class TagService
         return $names;
     }
 
-    public function getTagsWithCountArray(string $taggableType, ?int $limit = null): array
+    public function getTagsWithCountArray(string $taggableType, ?int $limit = null, string $tagLookupField = 'name'): array
     {
         $qb = $this->getTagsWithCountArrayQueryBuilder($taggableType);
 
@@ -255,7 +248,7 @@ class TagService
 
             // don't include orphaned tags
             if ($count > 0) {
-                $tagName = $tag[$this->tagLookupField];
+                $tagName = $tag[$tagLookupField];
                 $arr[$tagName] = $count;
             }
         }
@@ -263,11 +256,11 @@ class TagService
         return $arr;
     }
 
-    public function getTagsWithCountArrayQueryBuilder(string $taggableType): QueryBuilder
+    public function getTagsWithCountArrayQueryBuilder(string $taggableType, string $tagLookupField = 'name'): QueryBuilder
     {
         return $this->getTagsQueryBuilder($taggableType)
             ->groupBy('tagging.tag')
-            ->select('tag.' . $this->tagLookupField . ', COUNT(tagging.tag) as tag_count')
+            ->select('tag.' . $tagLookupField . ', COUNT(tagging.tag) as tag_count')
             ->orderBy('tag_count', 'DESC');
     }
 
@@ -282,10 +275,10 @@ class TagService
     /**
      * @return int[]
      */
-    public function getResourceIdsForTag(string $taggableType, string $tagName): array
+    public function getResourceIdsForTag(string $taggableType, string $tagName, string $tagLookupField = 'name'): array
     {
         $results = $this->getTagsQueryBuilder($taggableType)
-            ->andWhere('tag.' . $this->tagLookupField . ' = :tag')
+            ->andWhere('tag.' . $tagLookupField . ' = :tag')
             ->setParameter('tag', $tagName)
             ->select('tagging.resourceId')
             ->getQuery()
