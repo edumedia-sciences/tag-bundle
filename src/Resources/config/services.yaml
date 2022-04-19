@@ -6,3 +6,5 @@ services:
     public: true
   eduMedia\TagBundle\Command\TagCreateCommand:
     tags: [ console.command ]
+  eduMedia\TagBundle\EventListener\TagListener:
+    tags: [ { name: 'doctrine.event_listener', event: 'preRemove' } ]

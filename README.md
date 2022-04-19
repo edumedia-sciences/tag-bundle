@@ -110,5 +110,3 @@ bin/console doctrine:migrations:migrate
 ## TODO
 
 - Automated tests
-- Auto-load tags?
-- `preRemove`: `deleteTagging`
