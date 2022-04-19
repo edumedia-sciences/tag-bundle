@@ -111,5 +111,4 @@ bin/console doctrine:migrations:migrate
 
 - Automated tests
 - Auto-load tags?
-- Extract tags from entities (only handle them in the manager)?
 - `preRemove`: `deleteTagging`

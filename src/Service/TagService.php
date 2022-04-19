@@ -2,6 +2,8 @@
 
 namespace eduMedia\TagBundle\Service;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
@@ -20,16 +22,33 @@ class TagService
      */
     protected string $tagLookupField = 'name';
 
+    private Collection $entityTags;
+
     public function __construct(
         private string $tagClass,
         private string $taggingClass,
         private EntityManagerInterface $manager
     ) {
+        $this->entityTags = new ArrayCollection();
+    }
+
+    private function getResourceKey(TaggableInterface $resource): string {
+        return $resource->getTaggableType() . ':' . $resource->getTaggableId();
+    }
+
+    public function getTags(TaggableInterface $resource): Collection {
+        $key = $this->getResourceKey($resource);
+
+        if (!$this->entityTags->containsKey($key)) {
+            $this->entityTags->set($key, new ArrayCollection());
+        }
+
+        return $this->entityTags->get($key);
     }
 
     public function removeTag(TagInterface $tag, TaggableInterface $resource): self
     {
-        $resource->getTags()->removeElement($tag);
+        $this->getTags($resource)->removeElement($tag);
 
         return $this;
     }
@@ -96,9 +115,9 @@ class TagService
 
     public function saveTagging(TaggableInterface $resource): self
     {
-        $oldTags = $this->getTagging($resource);
-        $newTags = $resource->getTags();
-        $tagsToAdd = $newTags;
+        $oldTags = $this->queryTagging($resource);
+        $newTags = $this->getTags($resource);
+        $tagsToAdd = clone $newTags;
 
         if (!empty($oldTags)) {
             $tagsToRemove = array();
@@ -143,7 +162,7 @@ class TagService
     /**
      * @return TagInterface[]
      */
-    protected function getTagging(TaggableInterface $resource): array
+    protected function queryTagging(TaggableInterface $resource): array
     {
         return $this->manager
             ->createQueryBuilder()
@@ -166,7 +185,7 @@ class TagService
 
     public function loadTagging(TaggableInterface $resource): self
     {
-        $tags = $this->getTagging($resource);
+        $tags = $this->queryTagging($resource);
         $this->replaceTags($tags, $resource);
 
         return $this;
@@ -177,7 +196,7 @@ class TagService
      */
     public function replaceTags(array $tags, TaggableInterface $resource): self
     {
-        $resource->getTags()->clear();
+        $this->entityTags->remove($this->getResourceKey($resource));
         $this->addTags($tags, $resource);
 
         return $this;
@@ -199,8 +218,9 @@ class TagService
 
     public function addTag(TagInterface $tag, TaggableInterface $resource): self
     {
-        if (!$resource->getTags()->contains($tag)) {
-            $resource->getTags()->add($tag);
+        $tags = $this->getTags($resource);
+        if (!$tags->contains($tag)) {
+            $tags->add($tag);
         }
 
         return $this;
@@ -246,12 +266,12 @@ class TagService
      */
     public function getTagNames(TaggableInterface $resource): array
     {
-        $names = array();
+        $names = [];
 
-        if (sizeof($resource->getTags()) > 0) {
-            foreach ($resource->getTags() as $tag) {
-                $names[] = $tag->getName();
-            }
+        $tags = $this->getTags($resource);
+
+        foreach ($tags as $tag) {
+            $names[] = $tag->getName();
         }
 
         return $names;
