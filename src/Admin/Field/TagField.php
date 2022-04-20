@@ -2,9 +2,9 @@
 
 namespace eduMedia\TagBundle\Admin\Field;
 
-use eduMedia\TagBundle\Form\TagType;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
+use eduMedia\TagBundle\Form\Type\TagType;
 
 class TagField implements FieldInterface
 {

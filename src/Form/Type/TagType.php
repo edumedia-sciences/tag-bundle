@@ -1,6 +1,6 @@
 <?php
 
-namespace eduMedia\TagBundle\Form;
+namespace eduMedia\TagBundle\Form\Type;
 
 use eduMedia\TagBundle\Entity\TaggableInterface;
 use eduMedia\TagBundle\Service\TagService;
