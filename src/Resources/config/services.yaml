@@ -4,9 +4,6 @@ services:
 #    autoconfigure: true
   eduMedia\TagBundle\Service\TagService:
     public: true
-  tag_service:
-    alias: eduMedia\TagBundle\Service\TagService
-    public: true
   eduMedia\TagBundle\Command\TagCreateCommand:
     tags: [ console.command ]
   eduMedia\TagBundle\EventListener\TagListener:
