@@ -328,6 +328,20 @@ class TagService
             ->getResult();
     }
 
+    public function getTypeTagNames(string $taggableType): array
+    {
+        $names = $this->manager
+            ->createQueryBuilder()
+            ->select('t.name')
+            ->from($this->tagClass, 't')
+            ->innerJoin('t.tagging', 't2', Expr\Join::WITH, 't2.resourceType = :type')
+            ->setParameter('type', $taggableType)
+            ->getQuery()
+            ->getResult();
+
+        return array_map(fn(array $line) => $line['name'], $names);
+    }
+
     protected function createTagging(TagInterface $tag, TaggableInterface $resource): TaggingInterface
     {
         return new $this->taggingClass($tag, $resource);
