@@ -18,6 +18,14 @@ class eduMediaTagExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
         $loader->load('services.yaml');
 
+        if (class_exists('Symfony\Component\Console\Command\Command')) {
+            $loader->load('console-command.yaml');
+        }
+
+        if (class_exists('Twig\Extension\AbstractExtension')) {
+            $loader->load('twig-extension.yaml');
+        }
+
         if (class_exists('Symfony\Component\Form\AbstractType')) {
             $loader->load('form-type.yaml');
         }

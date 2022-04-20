@@ -1,14 +1,7 @@
 services:
   _defaults:
     autowire: true
-#    autoconfigure: true
   eduMedia\TagBundle\Service\TagService:
     public: true
-  eduMedia\TagBundle\Command\TagCreateCommand:
-    tags: [ console.command ]
   eduMedia\TagBundle\EventListener\TagListener:
     tags: [ { name: 'doctrine.event_listener', event: 'preRemove' } ]
-  eduMedia\TagBundle\Twig\TagExtension:
-    tags: [ twig.extension ]
-  eduMedia\TagBundle\Form\TagType:
-    tags: [ form.type ]
