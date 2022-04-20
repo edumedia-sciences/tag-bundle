@@ -1,0 +1,3 @@
+twig:
+  globals:
+    tag_service: '@tag_service'
