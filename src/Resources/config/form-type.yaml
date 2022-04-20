@@ -1,5 +1,4 @@
 services:
-  _defaults:
-    autowire: true
   eduMedia\TagBundle\Form\TagType:
+    arguments: [ '@eduMedia\TagBundle\Service\TagService' ]
     tags: [ form.type ]
