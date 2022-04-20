@@ -5,3 +5,5 @@ services:
     public: true
   eduMedia\TagBundle\EventListener\TagListener:
     tags: [ { name: 'doctrine.event_listener', event: 'preRemove' } ]
+  eduMedia\TagBundle\Form\TagType:
+    tags: [ form.type ]
