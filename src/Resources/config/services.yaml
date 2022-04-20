@@ -8,3 +8,5 @@ services:
     tags: [ console.command ]
   eduMedia\TagBundle\EventListener\TagListener:
     tags: [ { name: 'doctrine.event_listener', event: 'preRemove' } ]
+  eduMedia\TagBundle\Twig\TagExtension:
+    tags: [ twig.extension ]

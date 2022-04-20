@@ -1,3 +1,0 @@
-twig:
-  globals:
-    tag_service: '@eduMedia\TagBundle\Service\TagService'
