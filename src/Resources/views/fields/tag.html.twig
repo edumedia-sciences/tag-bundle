@@ -1,0 +1,2 @@
+{% set tags = tag_service.loadTagging(entity.instance).getTags(entity.instance) %}
+{% for tag in tags %}<span class="badge badge-primary">{{tag.name}}</span>{% endfor %}
