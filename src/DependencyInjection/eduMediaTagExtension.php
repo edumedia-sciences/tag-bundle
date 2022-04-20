@@ -17,6 +17,10 @@ class eduMediaTagExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
         $loader->load('services.yaml');
+
+        if (class_exists('Symfony\Component\Form\AbstractType')) {
+            $loader->load('form-type.yaml');
+        }
     }
 
     public function getAlias(): string
