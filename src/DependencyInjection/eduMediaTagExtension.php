@@ -17,7 +17,6 @@ class eduMediaTagExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
         $loader->load('services.yaml');
-        $loader->load('twig.yaml');
     }
 
     public function getAlias(): string
