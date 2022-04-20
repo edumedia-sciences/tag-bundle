@@ -10,3 +10,5 @@ services:
     tags: [ { name: 'doctrine.event_listener', event: 'preRemove' } ]
   eduMedia\TagBundle\Twig\TagExtension:
     tags: [ twig.extension ]
+  eduMedia\TagBundle\Form\TagType:
+    tags: [ form.type ]
