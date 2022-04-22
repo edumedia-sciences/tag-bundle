@@ -4,6 +4,8 @@
 
 Revival of https://github.com/FabienPennequin/FPNTagBundle for Symfony 6+ and PHP 8+.
 
+**Note:** The main difference with `fpn/tag-bundle` is that taggable entities do not hold their tags, they're only available through the `TagService`.
+
 ## How to
 
 ### Install bundle
@@ -90,6 +92,7 @@ class User implements /* (...) */ TaggableInterface
 ### Define service arguments
 
 ```yaml
+# config/services.yaml
 services:
   # (...)
   eduMedia\TagBundle\Service\TagService:
@@ -98,19 +101,21 @@ services:
       - 'App\Entity\Tagging'
 ```
 
-### Migrate
+### Migrate, to create tables
 
 ```sh
 bin/console make:migration
 bin/console doctrine:migrations:migrate
 ```
 
-## Changes
+## Features
 
-- Merged `TagManager` and `TagRepository` in a `TagService`
-- Added traits
-- Added utility commands
+- Most features are packed in `eduMedia\TagBundle\Service\TagService` (not documented yet, but should be self-explanatory)
+- If `symfony/console` is installed, a `edumedia:tag:create` command is available
+- If `symfony/twig-bundle` is installed, `tag_service` is globally available
+- If `symfony/form` is installed, `eduMedia\TagBundle\Form\Type\TagType` is available
+- If using `easycorp/easyadmin-bundle`, a `eduMedia\TagBundle\Admin\Field\TagField` is available
 
 ## TODO
 
-- Automated tests
+- Automated tests (help appreciated)
