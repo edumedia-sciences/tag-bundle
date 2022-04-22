@@ -26,9 +26,9 @@ class eduMediaTagExtension extends Extension
             $loader->load('twig-extension.yaml');
         }
 
-//        if (class_exists('Symfony\Component\Form\AbstractType')) {
-//            $loader->load('form-type.yaml');
-//        }
+        if (class_exists('Symfony\Component\Form\AbstractType')) {
+            $loader->load('form-type.yaml');
+        }
     }
 
     public function getAlias(): string
