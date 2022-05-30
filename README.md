@@ -108,6 +108,12 @@ bin/console make:migration
 bin/console doctrine:migrations:migrate
 ```
 
+### Install assets
+
+```sh
+bin/console assets:install
+```
+
 ## Features
 
 - Most features are packed in `eduMedia\TagBundle\Service\TagService` (not documented yet, but should be self-explanatory)
