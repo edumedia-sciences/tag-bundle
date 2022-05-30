@@ -9,7 +9,7 @@ trait TaggableTrait
         return self::class;
     }
 
-    public function getTaggableId(): int {
+    public function getTaggableId(): ?int {
         return $this->getId();
     }
 
