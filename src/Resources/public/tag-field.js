@@ -10,7 +10,7 @@ window.addEventListener('load', () => {
             options,
             items: JSON.parse($input.dataset.values),
             create: true,
-            plugins: ['clear_button', 'input_autogrow', 'remove_button'],
+            plugins: ['input_autogrow', 'remove_button'],
         })
     })
 })
