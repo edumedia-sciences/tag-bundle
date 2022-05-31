@@ -24,7 +24,7 @@ class TagType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $resource = $this->getTaggable($event->getForm(), $options);
-            $tagNames = $this->tagService->loadTagging($resource)->getTagNames($resource);
+            $tagNames = $this->tagService->getTagNames($resource, true);
             $event->setData(implode(', ', $tagNames));
         });
 
@@ -37,8 +37,7 @@ class TagType extends AbstractType
                 }, explode(',', $event->getData()))
             );
 
-            $tags = $this->tagService->loadOrCreateTags($tagNames);
-            $this->tagService->replaceTags($tags, $taggable)->saveTagging($taggable);
+            $this->tagService->replaceTags($this->tagService->loadOrCreateTags($tagNames), $taggable, true);
         });
     }
 
@@ -51,7 +50,7 @@ class TagType extends AbstractType
         $view->vars = array_replace($view->vars, [
             'attr' => [
                 'data-suggestions' => json_encode($this->tagService->getTypeTagNames($taggable->getTaggableType())),
-                'data-values'      => json_encode($this->tagService->loadTagging($taggable)->getTagNames($taggable)),
+                'data-values'      => json_encode($this->tagService->getTagNames($taggable, true)),
             ],
         ]);
     }
