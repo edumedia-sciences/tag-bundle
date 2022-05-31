@@ -322,7 +322,7 @@ class TagService
             ->setParameter('id', $resource->getTaggableId())
             ->setParameter('type', $resource->getTaggableType())
 
-            // ->orderBy('t.name', 'ASC')
+             ->orderBy('t.name', 'ASC')
 
             ->getQuery()
             ->getResult();
