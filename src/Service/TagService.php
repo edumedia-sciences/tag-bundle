@@ -36,7 +36,7 @@ class TagService
      * @param string[] $names Array of tag names
      * @return TagInterface[]
      */
-    public function loadOrCreateTags(array $names): array
+    public function loadOrCreateTags(array $names, bool $flush = true): array
     {
         if (empty($names)) {
             return [];
@@ -67,14 +67,20 @@ class TagService
                 $tags[] = $tag;
             }
 
-            $this->manager->flush();
+            if ($flush) {
+                $this->manager->flush();
+            }
         }
 
         return $tags;
     }
 
-    public function getTags(TaggableInterface $resource): Collection
+    public function getTags(TaggableInterface $resource, bool $autoload = false): Collection
     {
+        if ($autoload) {
+            $this->loadTagging($resource);
+        }
+
         $key = $this->getResourceKey($resource);
 
         if (!$this->entityTags->containsKey($key)) {
@@ -118,10 +124,14 @@ class TagService
     /**
      * @param TagInterface[] $tags
      */
-    public function replaceTags(array $tags, TaggableInterface $resource): self
+    public function replaceTags(array $tags, TaggableInterface $resource, bool $andSaveTagging = false): self
     {
         $this->entityTags->remove($this->getResourceKey($resource));
         $this->addTags($tags, $resource);
+
+        if ($andSaveTagging) {
+            $this->saveTagging($resource);
+        }
 
         return $this;
     }
@@ -218,11 +228,11 @@ class TagService
     /**
      * @return string[]
      */
-    public function getTagNames(TaggableInterface $resource): array
+    public function getTagNames(TaggableInterface $resource, bool $autoload = false): array
     {
         $names = [];
 
-        $tags = $this->getTags($resource);
+        $tags = $this->getTags($resource, $autoload);
 
         foreach ($tags as $tag) {
             $names[] = $tag->getName();
