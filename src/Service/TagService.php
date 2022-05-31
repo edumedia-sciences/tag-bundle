@@ -124,13 +124,13 @@ class TagService
     /**
      * @param TagInterface[] $tags
      */
-    public function replaceTags(array $tags, TaggableInterface $resource, bool $andSaveTagging = false): self
+    public function replaceTags(array $tags, TaggableInterface $resource, bool $andSaveTagging = false, bool $doNotFlush = false): self
     {
         $this->entityTags->remove($this->getResourceKey($resource));
         $this->addTags($tags, $resource);
 
         if ($andSaveTagging) {
-            $this->saveTagging($resource);
+            $this->saveTagging($resource, $doNotFlush);
         }
 
         return $this;
@@ -144,7 +144,7 @@ class TagService
         return $this;
     }
 
-    public function saveTagging(TaggableInterface $resource): self
+    public function saveTagging(TaggableInterface $resource, bool $doNotFlush = false): self
     {
         $oldTags = $this->queryTagging($resource);
         $newTags = $this->getTags($resource);
@@ -183,7 +183,7 @@ class TagService
             $this->manager->persist($this->createTagging($tag, $resource));
         }
 
-        if (count($tagsToAdd)) {
+        if (count($tagsToAdd) && !$doNotFlush) {
             $this->manager->flush();
         }
 
