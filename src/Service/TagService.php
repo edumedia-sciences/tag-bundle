@@ -136,10 +136,48 @@ class TagService
         return $this;
     }
 
+    /**
+     * @param TaggableInterface[] $resources
+     * @param array<int, TagInterface[]> $mappings
+     */
+    private function replaceResourcesTags(array $resources, array $mappings): self
+    {
+        foreach ($resources as $resource) {
+            $tags = $mappings[$resource->getTaggableId()] ?? [];
+            $this->replaceTags($tags, $resource);
+        }
+
+        return $this;
+    }
+
     public function loadTagging(TaggableInterface $resource): self
     {
         $tags = $this->queryTagging($resource);
         $this->replaceTags($tags, $resource);
+
+        return $this;
+    }
+
+    /**
+     * @param TaggableInterface[] $resources
+     */
+    public function loadResourcesTagging(array $resources): self
+    {
+        if (count($resources) == 0) {
+            return $this;
+        }
+
+        $ids = array_map(fn ($resource) => $resource->getTaggableId(), $resources);
+        $taggableType = $resources[0]->getTaggableType();
+
+        $resourcesTagging = $this->queryResourcesTagging($ids, $taggableType);
+
+        $mappings = [];
+        foreach ($resourcesTagging as $tagging) {
+            $mappings[$tagging->getResourceId()][] = $tagging->getTag();
+        }
+
+        $this->replaceResourcesTags($resources, $mappings);
 
         return $this;
     }
@@ -333,6 +371,32 @@ class TagService
             ->setParameter('type', $resource->getTaggableType())
 
              ->orderBy('t.name', 'ASC')
+
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param int[] $ids
+     * @param string $taggableType
+     * @return TaggingInterface[]
+     */
+    protected function queryResourcesTagging(array $ids, string $taggableType): array {
+
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        return $this->manager
+            ->createQueryBuilder()
+            ->select('tagging')
+            ->from($this->taggingClass, 'tagging')
+            ->andWhere('tagging.resourceId IN (:ids)')
+            ->andWhere('tagging.resourceType = :type')
+            ->join('tagging.tag', 'tag')
+            ->addSelect('tag')
+            ->setParameter('ids', $ids)
+            ->setParameter('type', $taggableType)
 
             ->getQuery()
             ->getResult();
