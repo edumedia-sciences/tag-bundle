@@ -2,6 +2,8 @@
 
 namespace eduMedia\TagBundle\Form\Type;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Events;
 use eduMedia\TagBundle\Entity\TaggableInterface;
 use eduMedia\TagBundle\Service\TagService;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +18,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TagType extends AbstractType
 {
 
-    public function __construct(private TagService $tagService)
+    public function __construct(
+        private TagService $tagService,
+        private EntityManagerInterface $entityManager,
+    )
     {
     }
 
@@ -36,6 +41,15 @@ class TagType extends AbstractType
                     return trim($s);
                 }, explode(',', $event->getData()))
             );
+
+            if (is_null($taggable->getTaggableId())) {
+                // We don't need to remove that listener, because persisting only happens once
+                $this->entityManager->getEventManager()->addEventListener(Events::postPersist, function() use ($taggable, $tagNames) {
+                    $this->tagService->replaceTags($this->tagService->loadOrCreateTags($tagNames), $taggable, true);
+                });
+
+                return;
+            }
 
             $this->tagService->replaceTags($this->tagService->loadOrCreateTags($tagNames), $taggable, true);
         });
