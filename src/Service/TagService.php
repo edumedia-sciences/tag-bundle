@@ -332,12 +332,25 @@ class TagService
             ->getQuery()
             ->execute(array(), AbstractQuery::HYDRATE_SCALAR);
 
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = (int)$result['resourceId'];
-        }
+        return array_map(fn($result) => (int)$result['resourceId'], $results);
+    }
 
-        return $ids;
+    /**
+     * @return int[]
+     */
+    public function getResourceIdsForTags(string $taggableType, array $tagNames, string $tagLookupField = 'name'): array
+    {
+        $queryBuilder = $this->getTagsQueryBuilder($taggableType);
+        $queryBuilder->andWhere($queryBuilder->expr()->in('tag.' . $tagLookupField, ':tags'))
+            ->setParameter('tags', $tagNames)
+            ->groupBy('tagging.resourceId')
+            ->having('COUNT(tagging.resourceId) = :count')
+            ->setParameter('count', count($tagNames))
+            ->select('tagging.resourceId');
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return array_map(fn($result) => (int)$result['resourceId'], $results);
     }
 
     protected function createQueryBuilder(string $alias, $indexBy = null): QueryBuilder
