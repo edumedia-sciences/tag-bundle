@@ -11,6 +11,10 @@ window.addEventListener('load', () => {
             items: JSON.parse($input.dataset.values),
             create: true,
             plugins: ['input_autogrow', 'remove_button'],
+            onItemAdd: function(){
+                this.setTextboxValue('')
+                this.refreshOptions()
+            },
         })
     })
 })
