@@ -2,7 +2,7 @@
 
 namespace eduMedia\TagBundle\EventListener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreRemoveEventArgs;
 use eduMedia\TagBundle\Entity\TaggableInterface;
 use eduMedia\TagBundle\Service\TagService;
 
@@ -13,9 +13,9 @@ class TagListener
     {
     }
 
-    public function preRemove(LifecycleEventArgs $args)
+    public function preRemove(PreRemoveEventArgs $args): void
     {
-        if (($resource = $args->getEntity()) and $resource instanceof TaggableInterface) {
+        if (($resource = $args->getObject()) and $resource instanceof TaggableInterface) {
             $this->tagService->deleteTagging($resource);
         }
     }
