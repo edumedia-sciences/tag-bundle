@@ -12,7 +12,7 @@ class TagField implements FieldInterface
 
     use FieldTrait;
 
-    public static function new(string $propertyName, ?string $label = null)
+    public static function new(string $propertyName, $label = null): self
     {
         return (new self())
             ->setProperty($propertyName)
