@@ -2,7 +2,6 @@
 
 namespace eduMedia\TagBundle\Admin\Field;
 
-use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 use eduMedia\TagBundle\Form\Type\TagType;
