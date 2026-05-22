@@ -20,9 +20,8 @@ class TagField implements FieldInterface
             ->setFormType(TagType::class)
             ->addCssClass('field-text field-edumedia-tag')
             ->setDefaultColumns('col-md-6 col-xxl-5')
-            // TODO: Improve
             ->addHtmlContentsToHead('<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>')
-            ->addJsFiles(Asset::new('bundles/edumediatag/tag-field.js')->onlyOnForms())
+            ->addHtmlContentsToHead('<script>' . file_get_contents(__DIR__ . '/tag-field.js') . '</script>')
             ->setTemplatePath('@eduMediaTag/fields/tag.html.twig')
             ;
     }
