@@ -3,3 +3,5 @@ services:
     autowire: true
   eduMedia\TagBundle\Form\Type\TagType:
     tags: [ form.type ]
+  eduMedia\TagBundle\Form\Type\TagFilterType:
+    tags: [ form.type ]

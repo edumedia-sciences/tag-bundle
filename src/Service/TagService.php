@@ -11,6 +11,8 @@ use Doctrine\ORM\QueryBuilder;
 use eduMedia\TagBundle\Entity\TaggableInterface;
 use eduMedia\TagBundle\Entity\TaggingInterface;
 use eduMedia\TagBundle\Entity\TagInterface;
+use eduMedia\TagBundle\Form\Filter\TagFilter;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 class TagService
 {
@@ -432,6 +434,24 @@ class TagService
     protected function createTagging(TagInterface $tag, TaggableInterface $resource): TaggingInterface
     {
         return new $this->taggingClass($tag, $resource);
+    }
+
+    public function newFilter(string $propertyName, string $taggableType, TranslatableInterface|string|bool|null $label = null): TagFilter
+    {
+        return TagFilter::new($propertyName, $taggableType, $this, $label);
+    }
+
+    public function addTagFilterToQueryBuilder(array $tagNames, string $taggableType, QueryBuilder $queryBuilder, string $entityAlias, string $identifierColumn = 'id'): void
+    {
+        if ($tagNames === []) {
+            return;
+        }
+
+        $ids = $this->getResourceIdsForTags($taggableType, $tagNames);
+
+        $queryBuilder
+            ->andWhere(sprintf("%s.%s IN (:tagFilterMatchingIds)", $entityAlias, $identifierColumn))
+            ->setParameter('tagFilterMatchingIds', $ids);
     }
 
 }
