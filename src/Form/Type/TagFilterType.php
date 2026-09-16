@@ -26,7 +26,7 @@ class TagFilterType extends AbstractType
         // Hidden field, to allow EA filters to work
         // If we use a single/simple ChoiceType, EA breaks with `Warning: Undefined array key "comparison"
         $builder->add('comparison', HiddenType::class, [
-            'data' => ComparisonType::EQ,
+            'empty_data' => ComparisonType::EQ,
         ]);
 
         $builder->add('value', ChoiceType::class, [
