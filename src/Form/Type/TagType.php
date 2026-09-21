@@ -55,7 +55,7 @@ class TagType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $taggable = $this->getTaggable($event->getForm(), $options);
-            $tagNames = $event->getData();
+            $tagNames = $event->getData() ?? [];
 
             $fieldForm = $event->getForm();
             $parentForm = $fieldForm->getParent();
